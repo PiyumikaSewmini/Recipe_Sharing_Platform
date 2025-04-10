@@ -1,5 +1,4 @@
 import React from 'react';
-import Footer from '../components/layout/Footer';
 import RecipeCollection from '../components/recipe/RecipeCollection/RecipeCollection';
 import AboutFlavorVerse from '../components/home/AboutFlavorVerse';
 import HeroSection from '../components/home/HeroSection';
@@ -35,7 +34,7 @@ const HomePage: React.FC = () => {
         <>
           <RecipeCollection />
           <AboutFlavorVerse />
-          <Footer />
+          
         </>
       )}
     </PageContainer>
