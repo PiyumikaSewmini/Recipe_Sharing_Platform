@@ -1,17 +1,38 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import RecipesPage from './pages/RecipesPage';
+import Footer from './components/layout/Footer';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/ThemeContext';
 import { checkAuth } from './redux/slices/authSlice';
 import ProtectedRoute from './components/AuthProtectedRouting';
+import { Box } from '@mui/material';
 
+// Layout component that conditionally renders Navbar and Footer
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  
+  return (
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column',
+      minHeight: '100vh'
+    }}>
+      
+      <Box sx={{ flex: 1 }}>
+        {children}
+      </Box>
+      {!isAuthPage && <Footer />}
+    </Box>
+  );
+};
 
 const ThemedApp: React.FC = () => {
   const { mode, themeColors } = useTheme();
@@ -65,17 +86,19 @@ const ThemedApp: React.FC = () => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Routes>
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/recipes" element={
-          <ProtectedRoute>
-            <RecipesPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/" element={<Navigate to="/home" replace />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/recipes" element={
+            <ProtectedRoute>
+              <RecipesPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/" element={<Navigate to="/home" replace />} />
+        </Routes>
+      </Layout>
     </MuiThemeProvider>
   );
 };
